@@ -12,13 +12,13 @@ github_repo: "https://github.com/15001234726/15001234726.github.io.git" # you co
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "Goals determine what you going to be!"
-sidebar-avatar: /img/ms.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: /img/apple-touch-icon.png      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
 # SNS settings
 RSS: false
-weibo_username:     15001234726
+weibo_username:     3055770765
 #zhihu_username:
 github_username:    15001234726
 #facebook_username:
