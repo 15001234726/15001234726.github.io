@@ -20,6 +20,99 @@ macOS版本 10.14.6
 参考文章中使用的是JDK_1.8.181 前的版本
 我使用的是JDK_1.8.211 于是发生了以下问题
 
+## 代码
+import javax.net.ssl.X509TrustManager;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+public class LTSTrustmanager  implements X509TrustManager {
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+            throws CertificateException {
+
+    }
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+            throws CertificateException {
+
+    }
+
+    @Override
+    public X509Certificate[] getAcceptedIssuers() {
+        return new java.security.cert.X509Certificate[0];
+    }
+}
+
+
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.security.SecureRandom;
+
+public class LTSSSLSocketFactory extends SSLSocketFactory {
+
+    private SSLSocketFactory socketFactory;
+
+    public LTSSSLSocketFactory() {
+        try {
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            ctx.init(null, new TrustManager[]{ new LTSTrustmanager()}, new SecureRandom());
+            socketFactory = ctx.getSocketFactory();
+        } catch ( Exception ex ) {
+            ex.printStackTrace(System.err);
+        }
+    }
+
+    public static SocketFactory getDefault(){
+        return new LTSSSLSocketFactory();
+    }
+
+    @Override
+    public Socket createSocket(Socket arg0, String arg1, int arg2, boolean arg3) throws IOException {
+        return null;
+    }
+
+    @Override
+    public String[] getDefaultCipherSuites() {
+        return socketFactory.getDefaultCipherSuites();
+    }
+
+    @Override
+    public String[] getSupportedCipherSuites() {
+        return socketFactory.getSupportedCipherSuites();
+    }
+
+    @Override
+    public Socket createSocket(String arg0, int arg1) throws IOException, UnknownHostException {
+        return socketFactory.createSocket(arg0, arg1);
+    }
+
+    @Override
+    public Socket createSocket(InetAddress arg0, int arg1) throws IOException {
+        return socketFactory.createSocket(arg0, arg1);
+    }
+
+    @Override
+    public Socket createSocket(String arg0, int arg1, InetAddress arg2, int arg3) throws IOException, UnknownHostException {
+        return socketFactory.createSocket(arg0, arg1, arg2, arg3);
+    }
+
+    @Override
+    public Socket createSocket(InetAddress arg0, int arg1, InetAddress arg2, int arg3) throws IOException {
+        return socketFactory.createSocket(arg0, arg1, arg2, arg3);
+    }
+}
+
+
+
+
 ## 问题
 我使用的是JDK_1.8.211，在操作Ldap时发生了异常：
 Caused by: java.security.cert.CertificateException: No subject alternative names matching IP address 10.X.X.X found
